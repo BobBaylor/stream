@@ -1,0 +1,6 @@
+# ignore one other python file
+ministream.py
+.hg/
+.hgignore
+*.txt
+*.bin
