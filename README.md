@@ -5,7 +5,7 @@ There are two scripts in this repo: stream.py and cap860.py They both collect da
 cap860.py is detailed after stream.py
 ## Which one should I use?
  * stream.py uses UDP which may drop packets (data) depending on network traffic so if missing data is a problem, 
- you might wan to use cap860.py
+ you might want to use cap860.py
  * cap860.py transfers using TCP/IP so packets are re-transmitted as needed and no data is lost. However, 
  the cap860.py transfer hapens after the data collection is complete so you must wait until the end.
  
