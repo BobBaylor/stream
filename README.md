@@ -1,4 +1,8 @@
-# stream
+There are two scripts in this repo: stream.py and cap860.py They both collect data from an SRS lock-in amplifier. 
+ * stream does it in real-time using UDP over an ethernet connection. 
+ * cap860 uses the lock-in capture buffer before downloading the data to the host computer. 
+cap860.py is detailed after stream.py
+# stream.py
 ## What is this?
 This python script streams data from a Stanford Research Systems SR865, SR865A, or SR860 lock-in amplifier.
 ## What's a lock-in amplifier?
@@ -27,3 +31,11 @@ Both of these things may require help from your local IT person. Once you've don
  * Change the default IP to match the setting in the SR865 Setup/Ethernet menu.
  * Make sure the UDP Port setting matches the opened port in your firewall.
 
+# cap860.py
+## What is this?
+This python script configures the instrument to capture data internally and, when complete, download it to the host computer. 
+## How do I run this script?
+You need all the things mentioned for stream.py, above
+
+## Is that all?
+Like stream.py, you *do* need to set the instrument IP address but you *do not* need to open a port in your firewall. Follow the instructions for stream but ignore the stuff about the port.
