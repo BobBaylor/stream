@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-# Copyright (c) 2015-2010 Stanford Research Systems
+# Copyright (c) 2015-2019 Stanford Research Systems
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -22,7 +22,7 @@
 # DEALINGS IN THE SOFTWARE.
 
 
-""" Example python script to setup and get data capture from an SR865.
+""" Example python script to setup and get data capture from an SR865 (or SR865A or SR860).
 
         Tested with python 2.7
         Typical installation will require vxi11 and docopt installation in the usually way.
