@@ -24,8 +24,8 @@
 
 """ Example python script to capture streaming data from an SR865.
 
-        Tested with python 2.7
-        Typical installation will require vxi11 and docopt installation in the usually way.
+        Tested with python 3.7.3
+        Typical installation will require vxi11 and docopt installation in the usual way.
 
   ****  Your host computer firewall MUST allow incoming UDP on the streaming port !!! ****
         See your IT person if you need help with this. Streaming cannot work without the open port.
@@ -43,18 +43,18 @@ import signal
 import sys
 import time
 import threading
-import Queue
+import queue
 
 # you may need to install these python modules
 try:
     import vxi11            # required
 except ImportError:
-    print 'required python vxi11 library not found. Please install vxi11'
+    print('required python vxi11 library not found. Please install vxi11')
 
 try:
     import docopt           # handy command line parser.
 except ImportError:
-    print 'python docopt library not found. Please install docopt'
+    print('python docopt library not found. Please install docopt')
 
 
 USE_STR = """
@@ -80,7 +80,7 @@ USE_STR = """
 def show_status(left_text='', right_text=''):
     """ Simple text status line that overwrites itself to prevent scrolling.
     """
-    print ' %-30s %48s\r'%(left_text[:30], right_text[:48]),
+    print(' %-30s %48s\r'%(left_text[:30], right_text[:48]), end=' ')
 
 # globals get assigned the udp and vxi11 objects to allow SIGINT to cleanup properly
 # pylint wants me to name these in all caps, as if they are constants. They're not.
@@ -92,11 +92,11 @@ def cleanup_ifcs():
     """
     # global the_udp_socket
     # global the_vx_ifc
-    print "\n cleaning up...",
+    print("\n cleaning up...", end=' ')
     the_vx_ifc.write('STREAM OFF')
     the_vx_ifc.close()
     the_udp_socket.close()
-    print 'connections closed\n'
+    print('connections closed\n')
 
 
 
@@ -105,14 +105,14 @@ def open_interfaces(ipadd, port):
     """
     global the_udp_socket   #pylint: disable=global-statement, invalid-name
     global the_vx_ifc       #pylint: disable=global-statement, invalid-name
-    print'\nopening incoming UDP Socket at %d ...' % port,
+    print('\nopening incoming UDP Socket at %d ...' % port, end=' ')
     the_udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     the_udp_socket.bind(('', port))      # listen to anything arriving on this port from anyone
-    print 'done'
-    print'opening VXI-11 at %s ...' % ipadd,
+    print('done')
+    print('opening VXI-11 at %s ...' % ipadd, end=' ')
     the_vx_ifc = vxi11.Instrument(ipadd)
     the_vx_ifc.write('STREAMPORT %d'%port)
-    print 'done'
+    print('done')
 
 
 
@@ -138,8 +138,8 @@ def dut_config(vx_ifc, s_channels, idx_pkt_len, f_rate_req, b_integers):
         i_decimate = 20
 
     f_rate = f_rate_max/(2.0**i_decimate)
-    print'Max rate is %.3f kS/S.'%(f_rate_max*1e-3)
-    print'Decimating by 2^%d down to %.3f kS/S'%(i_decimate, f_rate*1e-3)
+    print('Max rate is %.3f kS/S.'%(f_rate_max*1e-3))
+    print('Decimating by 2^%d down to %.3f kS/S'%(i_decimate, f_rate*1e-3))
     vx_ifc.write('STREAMRATE %d'%i_decimate)     # bring the rate under our target rate
     return f_rate
 
@@ -241,10 +241,10 @@ def empty_queue(q_data, q_drop, count_packets, bytes_per_packet, fmt_unpk, s_prt
 def show_results(count_dropped, count_packets, lst_dropped, count_samples):
     """ print indicating OK, or some dropped packets"""
     if count_dropped:
-        print '\nFAIL: Dropped %d out of %d packets in %d gaps:'%(count_dropped, count_packets, len(lst_dropped)),   #pylint: disable=line-too-long
-        print ''.join('%d at %d, '%(x[0], x[1]) for x in lst_dropped[:5])
+        print('\nFAIL: Dropped %d out of %d packets in %d gaps:'%(count_dropped, count_packets, len(lst_dropped)), end=' ')   #pylint: disable=line-too-long
+        print(''.join('%d at %d, '%(x[0], x[1]) for x in lst_dropped[:5]))
     else:
-        print '\npass: No packets dropped out of %d. %d samples captured.'%(count_packets, count_samples)   #pylint: disable=line-too-long
+        print('\npass: No packets dropped out of %d. %d samples captured.'%(count_packets, count_samples))   #pylint: disable=line-too-long
 
 
 
@@ -272,7 +272,7 @@ def test(opts):     #pylint: disable=too-many-locals, too-many-statements
     b_use_threads = opts['--thread']
 
     if s_channels.upper() not in lst_vars_allowed:
-        print 'bad --vars option (%s). Must be one of'%s_channels.upper(), ', '.join(lst_vars_allowed)   #pylint: disable=line-too-long
+        print('bad --vars option (%s). Must be one of'%s_channels.upper(), ', '.join(lst_vars_allowed))   #pylint: disable=line-too-long
         sys.exit(-1)
 
     open_interfaces(dut_add, dut_port)
@@ -293,24 +293,24 @@ def test(opts):     #pylint: disable=too-many-locals, too-many-statements
     dropped = []                            # make a list of any gaps in the packets
 
     show_status('streaming ...')
-    time_start = time.clock()
+    time_start = time.perf_counter()
     the_vx_ifc.write('STREAM ON')
     if b_use_threads:
         the_threads = []
-        queue_drops = Queue.Queue()
-        queue_data = Queue.Queue()            # decouple the printing/saving from the UDP socket
+        queue_drops = queue.Queue()
+        queue_data = queue.Queue()            # decouple the printing/saving from the UDP socket
         for queue_func, queue_args in [(fill_queue, (the_udp_socket, queue_data, total_packets, bytes_per_pkt+4)),    #pylint: disable=line-too-long
                                        (empty_queue, (queue_data, queue_drops, total_packets, bytes_per_pkt, fmt_unpk, fmt_live_printing, s_channels, fname, bshow_status))]:   #pylint: disable=line-too-long
             the_threads.append(threading.Thread(target=queue_func, args=queue_args))
             # the_threads[-1].setDaemon(True)
             the_threads[-1].start()
         s_no_printing = '' if bshow_status else 'silently'
-        print 'threads started %s\n'%s_no_printing
+        print('threads started %s\n'%s_no_printing)
         the_threads[0].join(duration_stream+2)    # time out 2 seconds after the expected duration
         the_threads[1].join(duration_stream*2)    # time out 2x the duration more
         # queue_drops.get() blocks until empty_queue() writes to queue_drops showing it finished.
         dropped = queue_drops.get()
-        print 'threads done'
+        print('threads done')
 
     else:           # don't use threads. "block" instead
         for i in range(total_packets):
@@ -323,12 +323,12 @@ def test(opts):     #pylint: disable=too-many-locals, too-many-statements
             if bshow_status:
                 show_status('dropped %4d of %d'%(sum(dropped), i), fmt_live_printing%tuple(lst_stream[-1][-len(s_channels):]))   #pylint: disable=line-too-long
 
-        time_end = time.clock()
+        time_end = time.perf_counter()
         if fname is not None:
             write_to_file(fname, s_channels, lst_stream)
         cleanup_ifcs()
         show_results(sum(dropped), total_packets, dropped, total_packets*bytes_per_pkt/(4*len(s_channels)))    #pylint: disable=line-too-long
-        print 'Time elapsed: %.3f seconds'%(time_end-time_start)
+        print('Time elapsed: %.3f seconds'%(time_end-time_start))
 
 
 if __name__ == '__main__':
