@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # encoding: utf-8
 
-# Copyright (c) 2015-2017 Stanford Research Systems
+# Copyright (c) 2015-2019 Stanford Research Systems
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -280,10 +280,10 @@ def test(opts):     #pylint: disable=too-many-locals, too-many-statements
     # translate the packet size enumeration into an actual byte count
     bytes_per_pkt = [1024, 512, 256, 128][idx_pkt_len]
     if b_integers:
-        fmt_unpk = '>%dh'%(bytes_per_pkt/2)            # create an unpacking format string.
+        fmt_unpk = '>%dh'%(bytes_per_pkt//2)            # create an unpacking format string.
         fmt_live_printing = '%12d'*len(s_channels)        # create status format string.
     else:
-        fmt_unpk = '>%df'%(bytes_per_pkt/4)
+        fmt_unpk = '>%df'%(bytes_per_pkt//4)
         fmt_live_printing = '%12.6f'*len(s_channels)
 
     total_packets = int(math.ceil(f_total_samples*4*len(s_channels)/bytes_per_pkt))
@@ -327,7 +327,7 @@ def test(opts):     #pylint: disable=too-many-locals, too-many-statements
         if fname is not None:
             write_to_file(fname, s_channels, lst_stream)
         cleanup_ifcs()
-        show_results(sum(dropped), total_packets, dropped, total_packets*bytes_per_pkt/(4*len(s_channels)))    #pylint: disable=line-too-long
+        show_results(sum(dropped), total_packets, dropped, total_packets*bytes_per_pkt//(4*len(s_channels)))    #pylint: disable=line-too-long
         print('Time elapsed: %.3f seconds'%(time_end-time_start))
 
 

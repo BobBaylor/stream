@@ -192,7 +192,7 @@ def write_to_file(file_name, s_channels, f_data, open_mode='a'):
         with open(file_name, open_mode) as f_out:
             s_fmt = '%+12.6e,'*len(s_channels)
             f_out.write(''.join(['%s,'%str.upper(v) for v in s_channels])+'\n')
-            for i in range(0, len(f_data)/len(s_channels), len(s_channels)):
+            for i in range(0, len(f_data)//len(s_channels), len(s_channels)):
                 a_line = f_data[i:i+len(s_channels)]
                 f_out.write(s_fmt%tuple(a_line)+'\n')
             show_status('%s written'%file_name)
