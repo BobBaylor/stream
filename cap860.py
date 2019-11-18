@@ -24,7 +24,7 @@
 
 """ Example python script to setup and get data capture from an SR865 (or SR865A or SR860).
 
-        Tested with python 2.7
+        Tested with python 3.7
         Typical installation will require vxi11 and docopt installation in the usually way.
 
         python cap860.py -h        to see the list of options
