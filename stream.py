@@ -323,12 +323,12 @@ def test(opts):     #pylint: disable=too-many-locals, too-many-statements
             if bshow_status:
                 show_status('dropped %4d of %d'%(sum(dropped), i), fmt_live_printing%tuple(lst_stream[-1][-len(s_channels):]))   #pylint: disable=line-too-long
 
-        time_end = time.perf_counter()
         if fname is not None:
             write_to_file(fname, s_channels, lst_stream)
         cleanup_ifcs()
         show_results(sum(dropped), total_packets, dropped, total_packets*bytes_per_pkt//(4*len(s_channels)))    #pylint: disable=line-too-long
-        print('Time elapsed: %.3f seconds'%(time_end-time_start))
+    time_end = time.perf_counter()
+    print('Time elapsed: %.3f seconds'%(time_end-time_start))
 
 
 if __name__ == '__main__':
