@@ -27,7 +27,7 @@ You need a few things:
 
 ## Is that all?
 You also need to
- * open your comupter's firewall for incoming UDP on the streaming port. This script defaults to 1865 but any port that
+ * open your computer's firewall for incoming UDP on the streaming port. This script defaults to 1865 but any port that
  doesn't conflict with some other service will work.
  * set the IP address of the SR865 to be visible to your computer and not conflict with other devices on your network.
  * use telnet to verify that your computer can connect to the SR865.
